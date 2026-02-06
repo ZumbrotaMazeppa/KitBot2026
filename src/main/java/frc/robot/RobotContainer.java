@@ -5,9 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.Constants.OperatorConstants; // missing FuelConstants (Might not need it though)
+import frc.robot.Constants.OperatorConstants;
+import static frc.robot.Constants.LemonConstant.*;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LemonSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -21,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
-
+  private final LemonSubsystem m_LemonSubsystem = new LemonSubsystem();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -45,6 +47,19 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+
+    m_driverController.leftBumper()
+        .whileTrue(m_LemonSubsystem.runEnd(() -> m_LemonSubsystem.intake(), () -> m_LemonSubsystem.stop()));
+    // While the right bumper on the operator controller is held, spin up for 1
+    // second, then launch fuel. When the button is released, stop.
+    m_driverController.rightBumper()
+        .whileTrue(m_LemonSubsystem.spinUpCommand().withTimeout(SPIN_UP_SECONDS)
+            .andThen(m_LemonSubsystem.launchCommand())
+            .finallyDo(() -> m_LemonSubsystem.stop()));
+    // While the A button is held on the operator controller, eject fuel back out
+    // the intake
+    m_driverController.a()
+        .whileTrue(m_LemonSubsystem.runEnd(() -> m_LemonSubsystem.eject(), () -> m_LemonSubsystem.stop()));
 
     m_DriveSubsystem.setDefaultCommand(
         m_DriveSubsystem.driveArcade(
