@@ -63,10 +63,15 @@ public class RobotContainer {
 
     m_DriveSubsystem.setDefaultCommand(
         m_DriveSubsystem.driveArcade(
-            () -> -m_driverController.getLeftY() * 1,
-            () -> -m_driverController.getRightX() * 1));
+            () -> -m_driverController.getLeftY() * 0.75,
+            () -> m_driverController.getLeftX() * 0.5)); //Changing these values changes speed, x = turn, y = foward/reverse
+   /* m_DriveSubsystem.setDefaultCommand(
+        m_DriveSubsystem.driveArcade(
+            () -> -m_driverController.getRightY() * 0.5,
+            () -> m_driverController.getRightX() * 0.375)); //Changing these values changes speed, x = turn, y = foward/reverse
   }
-
+  */
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
