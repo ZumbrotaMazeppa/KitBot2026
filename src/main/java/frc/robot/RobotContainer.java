@@ -50,7 +50,7 @@ public class RobotContainer {
 
     m_driverController.leftBumper()
         .whileTrue(m_LemonSubsystem.runEnd(() -> m_LemonSubsystem.intake(), () -> m_LemonSubsystem.stop()));
-    // While the right bumper on the operator controller is held, spin up for 1
+    // While the right bumper on the operator controller is held, spin up for 0.5
     // second, then launch fuel. When the button is released, stop.
     m_driverController.rightBumper()
         .whileTrue(m_LemonSubsystem.spinUpCommand().withTimeout(SPIN_UP_SECONDS)
@@ -61,16 +61,14 @@ public class RobotContainer {
     m_driverController.a()
         .whileTrue(m_LemonSubsystem.runEnd(() -> m_LemonSubsystem.eject(), () -> m_LemonSubsystem.stop()));
 
-    m_DriveSubsystem.setDefaultCommand(
-        m_DriveSubsystem.driveArcade(
-            () -> -m_driverController.getLeftY() * 0.75,
-            () -> m_driverController.getLeftX() * 0.5)); //Changing these values changes speed, x = turn, y = foward/reverse
-   /* m_DriveSubsystem.setDefaultCommand(
-        m_DriveSubsystem.driveArcade(
-            () -> -m_driverController.getRightY() * 0.5,
-            () -> m_driverController.getRightX() * 0.375)); //Changing these values changes speed, x = turn, y = foward/reverse
+    
   }
-  */
+  public void configureDrive(){
+       if (m_driverController.getRightTriggerAxis() > 0.5) {
+        m_DriveSubsystem.driveArcade(() -> -m_driverController.getLeftY() * 0.6, () -> m_driverController.getLeftX() * 0.5);
+    } else {
+        m_DriveSubsystem.driveArcade(() -> -m_driverController.getLeftY() * 0.80, () -> m_driverController.getLeftX() * 0.65);
+    } //Changing these values changes speed, x = turn, y = foward/reverse
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
