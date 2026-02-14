@@ -59,5 +59,6 @@ public class Robot extends TimedRobot {
         } else {
             System.out.println("No target detected.");
         }
+    LimelightHelpers.setupPortForwardingUSB();
     }
 }
